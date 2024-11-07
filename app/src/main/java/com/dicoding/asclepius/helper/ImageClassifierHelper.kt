@@ -1,0 +1,146 @@
+package com.dicoding.asclepius.helper
+
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.graphics.Bitmap
+import android.media.Image
+import android.net.Uri
+import android.os.Build
+import android.os.SystemClock
+import android.provider.MediaStore
+import android.util.Log
+import android.view.Surface
+import android.widget.Toast
+import androidx.camera.core.ImageProxy
+import com.dicoding.asclepius.R
+import com.dicoding.asclepius.ml.CancerClassification
+import com.dicoding.asclepius.view.MainActivity
+import com.google.android.gms.tflite.client.TfLiteInitializationOptions
+import com.google.android.gms.tflite.gpu.support.TfLiteGpu
+import org.tensorflow.lite.gpu.CompatibilityList
+import org.tensorflow.lite.support.image.TensorImage
+import org.tensorflow.lite.task.core.BaseOptions
+import org.tensorflow.lite.task.core.vision.ImageProcessingOptions
+import org.tensorflow.lite.task.gms.vision.TfLiteVision
+import org.tensorflow.lite.task.gms.vision.classifier.Classifications
+import org.tensorflow.lite.task.gms.vision.classifier.ImageClassifier
+import java.io.IOException
+
+
+class ImageClassifierHelper(
+    var threshold: Float = 0.1f,
+    var maxResults: Int = 3,
+    val modelName: String = "cancer_classification.tflite",
+    val context: Context,
+    val classifierListener: ClassifierListener?
+) {
+    private var imageClassifier: ImageClassifier? = null
+
+
+    init {
+        initializeTfLiteVision()
+    }
+
+    private fun initializeTfLiteVision() {
+        TfLiteGpu.isGpuDelegateAvailable(context).onSuccessTask { gpuAvailable ->
+            val optionsBuilder = TfLiteInitializationOptions.builder()
+            if (gpuAvailable) {
+                optionsBuilder.setEnableGpuDelegateSupport(true)
+            }
+            TfLiteVision.initialize(context, optionsBuilder.build())
+        }.addOnSuccessListener {
+            setupImageClassifier()
+//            (context as? MainActivity)?.isLoading?.postValue(false)
+        }
+            .addOnFailureListener {
+                classifierListener?.onError(context.getString(R.string.tflitevision_is_not_initialized_yet))
+//                (context as? MainActivity)?.isLoading?.postValue(false)
+            }
+    }
+
+    private fun setupImageClassifier() {
+        val optionsBuilder = ImageClassifier.ImageClassifierOptions.builder()
+            .setScoreThreshold(threshold)
+            .setMaxResults(maxResults)
+        val baseOptionsBuilder = BaseOptions.builder()
+            .setNumThreads(4)
+
+        // menggunakan GPU pada ImageClassifier
+        if (CompatibilityList().isDelegateSupportedOnThisDevice){
+            baseOptionsBuilder.useGpu()  // menggunakan GPU
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1){
+            baseOptionsBuilder.useNnapi()
+        } else {
+            // Menggunakan CPU
+            baseOptionsBuilder.setNumThreads(4)
+        }
+        optionsBuilder.setBaseOptions(baseOptionsBuilder.build())
+
+        try {
+            imageClassifier = ImageClassifier.createFromFileAndOptions(
+                context,
+                modelName,
+                optionsBuilder.build()
+            )
+        } catch (e: IllegalStateException) {
+            classifierListener?.onError(context.getString(R.string.image_classifier_failed))
+            Log.e(TAG, e.message.toString())
+        }
+    }
+
+    fun classifyStaticImage(imageUri: Uri) {
+        Log.d("testinga", "Setting up image classifier")
+        // TODO: mengklasifikasikan imageUri dari gambar statis.
+        if (!TfLiteVision.isInitialized()) {
+            val errorMessage = context.getString(R.string.tflitevision_is_not_initialized_yet)
+            Log.e(TAG, errorMessage)
+            classifierListener?.onError(errorMessage)
+            return
+        }
+
+        // Ensure imageClassifier is set up
+        if (imageClassifier == null) {
+            setupImageClassifier()
+        }
+
+        try {
+            val model = CancerClassification.newInstance(context)
+            // convert ke bitmap
+
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+            val image = TensorImage.fromBitmap(bitmap)
+            val results = imageClassifier?.classify(image)
+            classifierListener?.onResults(results, System.currentTimeMillis())
+
+//            val outputs = model.process(image)
+//            val probability = outputs.probabilityAsCategoryList
+
+            model.close()
+        } catch (e: IOException) {
+            classifierListener?.onError(context.getString(R.string.image_classifier_failed))
+            Log.e(TAG, e.message.toString())
+        }
+
+    }
+
+//    private fun getOrientationFromRotation(rotation: Int): ImageProcessingOptions.Orientation {
+//        return when (rotation) {
+//            Surface.ROTATION_270 -> ImageProcessingOptions.Orientation.BOTTOM_RIGHT
+//            Surface.ROTATION_180 -> ImageProcessingOptions.Orientation.RIGHT_BOTTOM
+//            Surface.ROTATION_90 -> ImageProcessingOptions.Orientation.TOP_LEFT
+//            else -> ImageProcessingOptions.Orientation.RIGHT_TOP
+//        }
+//    }
+
+    interface ClassifierListener {
+        fun onError(error: String)
+        fun onResults(
+            results: List<Classifications>?,
+            inferenceTime: Long
+        )
+    }
+
+    companion object {
+        private const val TAG = "ImageClassifierHelper"
+    }
+}

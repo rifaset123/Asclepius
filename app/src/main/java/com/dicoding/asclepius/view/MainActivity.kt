@@ -15,8 +15,10 @@ import androidx.core.content.ContextCompat
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
+import com.yalantis.ucrop.UCrop
 import org.tensorflow.lite.task.gms.vision.TfLiteVision
 import org.tensorflow.lite.task.gms.vision.classifier.Classifications
+import java.io.File
 import java.text.NumberFormat
 
 class MainActivity : AppCompatActivity() {
@@ -61,19 +63,53 @@ class MainActivity : AppCompatActivity() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
+//    private val launcherGallery = registerForActivityResult(
+//        ActivityResultContracts.PickVisualMedia()
+//    ) { uri: Uri? ->
+//        if (uri != null) {
+//            currentImageUri = uri
+//            showImage()
+//        } else {
+//            Log.d("Photo Picker", "No media selected")
+//        }
+//    }
+
     private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            currentImageUri = uri
-            showImage()
+            startCrop(uri)
         } else {
             Log.d("Photo Picker", "No media selected")
         }
     }
 
+    private fun startCrop(uri: Uri) {
+        val destinationUri = Uri.fromFile(File(cacheDir, "croppedImage.jpg"))
+        val options = UCrop.Options().apply {
+            setCompressionQuality(80)
+            setFreeStyleCropEnabled(true)
+        }
+        UCrop.of(uri, destinationUri)
+            .withOptions(options)
+            .start(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            val resultUri = UCrop.getOutput(data!!)
+            if (resultUri != null) {
+                currentImageUri = resultUri
+                showImage()
+            }
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            val cropError = UCrop.getError(data!!)
+            Log.e("UCrop", "Crop error: ${cropError?.message}")
+        }
+    }
+
     private fun showImage() {
-        // TODO: Menampilkan gambar sesuai Gallery yang dipilih.
         currentImageUri?.let {
             Log.d("Image URI", "showImage: $it")
             binding.previewImageView.setImageURI(it)
@@ -128,11 +164,11 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun moveToResult() {
-        val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
-        startActivity(intent)
-    }
+//    private fun moveToResult() {
+//        val intent = Intent(this, ResultActivity::class.java)
+//        intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
+//        startActivity(intent)
+//    }
 
     private fun moveToTes() {
         val intent = Intent(this, TabActivity::class.java)

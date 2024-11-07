@@ -62,4 +62,8 @@ dependencies {
     // viewmodel
     implementation ("androidx.activity:activity-ktx:1.2.3")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
+
+    // uCrop
+    implementation ("com.github.yalantis:ucrop:2.2.8")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 }

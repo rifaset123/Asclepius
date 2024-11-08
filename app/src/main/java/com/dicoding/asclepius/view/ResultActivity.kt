@@ -1,5 +1,6 @@
 package com.dicoding.asclepius.view
 
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -40,22 +41,20 @@ class ResultActivity : AppCompatActivity() {
         imageUri?.let {
             binding.resultImage.setImageURI(it)
         }
-        binding.resultName.text = result
-        binding.resultInferenceTime.text = confidant
+        with(binding){
+            resultAll.text = confidant
+            if (result == "Cancer"){
+                //set text to string
+                resultConclusion.text = getText(R.string.cancer_detected)
+            } else {
+                resultConclusion.text = getText(R.string.no_cancer_detected)
+            }
 
-    }
-
-    private fun convertImageProxyToUri(image: ImageProxy): Uri {
-        // Implement the conversion logic here
-        // This is a placeholder implementation
-        val tempFile = File.createTempFile("image", ".jpg", cacheDir)
-        val outputStream = FileOutputStream(tempFile)
-        val buffer = image.planes[0].buffer
-        val bytes = ByteArray(buffer.remaining())
-        buffer.get(bytes)
-        outputStream.write(bytes)
-        outputStream.close()
-        return Uri.fromFile(tempFile)
+            backButton.setOnClickListener {
+                // back to home
+                finish()
+            }
+        }
     }
 
     companion object {

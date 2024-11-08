@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,13 +39,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+
+
         setContentView(R.layout.activity_main)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         with(binding){
-            tes.setOnClickListener{
+            analyzeButton.isEnabled = false
+
+            informationButton.setOnClickListener{
                 moveToTes()
             }
 
@@ -123,8 +128,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun showImage() {
         currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
-            binding.previewImageView.setImageURI(it)
+            binding.previewImageView.apply {
+                setImageURI(it)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+            binding.analyzeButton.isEnabled = true
         }
     }
         // TODO: Menganalisa gambar yang berhasil ditampilkan.

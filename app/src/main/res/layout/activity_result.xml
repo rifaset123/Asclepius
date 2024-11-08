@@ -11,32 +11,100 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+        <TextView
+            android:id="@+id/tvHeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/result_headline"
+            android:textAlignment="center"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/result_image"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:scaleType="fitCenter"
+            android:layout_height="300dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/image_outline"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_place_holder"/>
 
         <TextView
             android:id="@+id/result_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/inter"
+            android:textAlignment="center"
             android:text="@string/result" />
 
         <TextView
-            android:id="@+id/result_name"
+            android:id="@+id/result_Headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="@string/result" />
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/inter"
+            android:text="@string/based" />
 
         <TextView
-            android:id="@+id/result_inference_time"
+            android:id="@+id/result_all"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inter"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:text="@string/inference_time" />
+
+        <TextView
+            android:id="@+id/result_conclusion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/inter"
+            android:text="@string/cancer_detected" />
+
+        <TextView
+            android:id="@+id/result_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/inter"
+            android:text="@string/result_info" />
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/back_to_home"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
     </LinearLayout>
 </ScrollView>

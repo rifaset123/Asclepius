@@ -32,4 +32,16 @@
     <string name="published_date">Published Date</string>
 
 
+    <string name="cancer_detected">In conclusion, the results of the analysis state that the image is <b>Cancer</b>.</string>
+    <string name="no_cancer_detected">In conclusion, the results of the analysis state that the image is <b>Non-Cancer</b></string>
+    <string name="result_info">For additional information like <b>News</b> and <b>History</b>, please check our Information Centre.</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="based">Based on the you\'ve image, here are the result</string>
+    <string name="result_headline">Analysis Result</string>
+    <string name="make_sure_the_image_is_clear">Make sure the image is clear</string>
+    <string name="information_centre">Information Centre</string>
+    <string name="for_more_information">For more information</string>
+    <string name="choose_an_image_to_analyze">Choose an image to analyze</string>
+    <string name="image_recognition_for_cancer_detection">Image Recognition for Cancer Detection</string>
+    <string name="headline">Cancer Detection Apps</string>
 </resources>

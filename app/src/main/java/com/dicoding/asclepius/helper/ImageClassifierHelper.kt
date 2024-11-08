@@ -107,9 +107,6 @@ class ImageClassifierHelper(
         try {
             val model = CancerClassification.newInstance(context)
             // convert ke bitmap
-//
-//            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
-//            val image = TensorImage.fromBitmap(bitmap)
             val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 val source = ImageDecoder.createSource(context.contentResolver, imageUri)
                 ImageDecoder.decodeBitmap(source)
@@ -121,9 +118,6 @@ class ImageClassifierHelper(
 
             val results = imageClassifier?.classify(image)
             classifierListener?.onResults(results, System.currentTimeMillis())
-
-//            val outputs = model.process(image)
-//            val probability = outputs.probabilityAsCategoryList
 
             model.close()
         } catch (e: IOException) {

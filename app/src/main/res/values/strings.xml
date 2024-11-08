@@ -44,4 +44,5 @@
     <string name="choose_an_image_to_analyze">Choose an image to analyze</string>
     <string name="image_recognition_for_cancer_detection">Image Recognition for Cancer Detection</string>
     <string name="headline">Cancer Detection Apps</string>
+    <string name="the_se_are_the_latest_news_about_cancer">The\'se are the latest news about cancer</string>
 </resources>

@@ -20,7 +20,6 @@ import java.text.NumberFormat
 
 class ResultActivity : AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
-    private lateinit var imageClassifierHelper: ImageClassifierHelper
 
     private var imageUri: Uri? = null
     private var result: String? = null
@@ -42,9 +41,8 @@ class ResultActivity : AppCompatActivity() {
             binding.resultImage.setImageURI(it)
         }
         with(binding){
-            resultAll.text = confidant
+            resultText.text = confidant
             if (result == "Cancer"){
-                //set text to string
                 resultConclusion.text = getText(R.string.cancer_detected)
             } else {
                 resultConclusion.text = getText(R.string.no_cancer_detected)

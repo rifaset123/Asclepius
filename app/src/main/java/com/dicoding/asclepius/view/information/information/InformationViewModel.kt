@@ -26,9 +26,7 @@ private val _isLoading = MutableLiveData<Boolean>()
         try {
             val response = ApiConfig.getApiService().getNews(BuildConfig.API_KEY)
             _listEventsItem.value = response.articles
-            Log.e("InformationViewModel", "sjuccess")
         } catch (e: Exception) {
-            Log.e("InformationViewModel", "Error fetching news", e)
             _listEventsItem.value = null
         } finally {
             _isLoading.value = false

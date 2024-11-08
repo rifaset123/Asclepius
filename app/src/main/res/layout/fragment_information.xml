@@ -9,7 +9,7 @@
         android:id="@+id/event_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="The'se are the latest news about cancer"
+        android:text="@string/the_se_are_the_latest_news_about_cancer"
         android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

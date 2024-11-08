@@ -54,7 +54,7 @@ class InformationFragment : Fragment(), OnEventClickListener {
         }
         viewModel.listEventsItem.observe(viewLifecycleOwner) { events ->
             adapter.submitList(events ?: emptyList())
-            Log.d("UpcomingFragment", "RecyclerView loaded with ${events?.size ?: 0} items")
+//            Log.d("UpcomingFragment", "RecyclerView loaded with ${events?.size ?: 0} items")
             binding.progressBar.visibility = View.GONE
         }
 
@@ -72,6 +72,6 @@ class InformationFragment : Fragment(), OnEventClickListener {
     override fun onEventClick(news: ArticlesItem) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(news.url))
         startActivity(intent)
-        Log.d("InformationFragment", "Opening ${news.url}")
+//        Log.d("InformationFragment", "Opening ${news.url}")
     }
 }

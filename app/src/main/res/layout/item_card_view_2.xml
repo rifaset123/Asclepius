@@ -37,7 +37,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:gravity="start"
-            android:maxLines="3"
+            android:maxLines="1"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tv_item_title"

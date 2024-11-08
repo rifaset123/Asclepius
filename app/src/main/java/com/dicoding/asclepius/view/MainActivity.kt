@@ -46,10 +46,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        with(binding){
+        with(binding) {
             analyzeButton.isEnabled = false
 
-            informationButton.setOnClickListener{
+            informationButton.setOnClickListener {
                 moveToTes()
             }
 
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // analyze image
-            analyzeButton.setOnClickListener{
+            analyzeButton.setOnClickListener {
                 currentImageUri?.let {
                     analyzeButton.isEnabled = false
                     analyzeButton.text = getString(R.string.analyzing_image)
@@ -80,29 +80,19 @@ class MainActivity : AppCompatActivity() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-//    private val launcherGallery = registerForActivityResult(
-//        ActivityResultContracts.PickVisualMedia()
-//    ) { uri: Uri? ->
-//        if (uri != null) {
-//            currentImageUri = uri
-//            showImage()
-//        } else {
-//            Log.d("Photo Picker", "No media selected")
-//        }
-//    }
-
     private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
             startCrop(uri)
         } else {
-            Log.d("Photo Picker", "No media selected")
+//            Log.d("Photo Picker", "No media selected")
         }
     }
 
     private fun startCrop(uri: Uri) {
-        val destinationUri = Uri.fromFile(File(cacheDir, "croppedImage_${System.currentTimeMillis()}.jpg"))
+        val destinationUri =
+            Uri.fromFile(File(cacheDir, "croppedImage_${System.currentTimeMillis()}.jpg"))
         val options = UCrop.Options().apply {
             setCompressionQuality(80)
             setFreeStyleCropEnabled(true)
@@ -121,8 +111,8 @@ class MainActivity : AppCompatActivity() {
                 showImage()
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
-            val cropError = UCrop.getError(data!!)
-            Log.e("UCrop", "Crop error: ${cropError?.message}")
+//            val cropError = UCrop.getError(data!!)
+//            Log.e("UCrop", "Crop error: ${cropError?.message}")
         }
     }
 
@@ -135,7 +125,8 @@ class MainActivity : AppCompatActivity() {
             binding.analyzeButton.isEnabled = true
         }
     }
-        // TODO: Menganalisa gambar yang berhasil ditampilkan.
+
+    // TODO: Menganalisa gambar yang berhasil ditampilkan.
     private fun analyzeImage(uri: Uri) {
         val imageClassifierHelper = ImageClassifierHelper(
             context = this,
@@ -150,7 +141,9 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread {
                         val intent = Intent(this@MainActivity, ResultActivity::class.java)
                         intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, uri.toString())
-                        intent.putExtra(ResultActivity.EXTRA_RESULT, results?.let { it[0].categories[0].label })
+                        intent.putExtra(
+                            ResultActivity.EXTRA_RESULT,
+                            results?.let { it[0].categories[0].label })
                         intent.putExtra(ResultActivity.EXTRA_CONFIDANT, results?.let {
                             val sortedCategories =
                                 it[0].categories.sortedByDescending { it?.score }
@@ -168,16 +161,19 @@ class MainActivity : AppCompatActivity() {
                                 id = 0,
                                 uriImage = uri.toString(),
                                 result = it[0].categories[0].label,
-                                detail = it[0].categories.maxByOrNull { it.score }?.let { category ->
-                                    NumberFormat.getPercentInstance().format(category.score).trim()
-                                } ?: ""
+                                detail = it[0].categories.maxByOrNull { it.score }
+                                    ?.let { category ->
+                                        NumberFormat.getPercentInstance().format(category.score)
+                                            .trim()
+                                    } ?: ""
                             )
-                            HistoryRepo.getInstance(historyDao).saveHistoryToDatabase(listOf(historyEntity))
+                            HistoryRepo.getInstance(historyDao)
+                                .saveHistoryToDatabase(listOf(historyEntity))
                         }
 
                         runOnUiThread {
                             startActivity(intent)
-                            with(binding){
+                            with(binding) {
                                 analyzeButton.isEnabled = true
                                 analyzeButton.text = getString(R.string.analyze)
                             }
@@ -198,12 +194,6 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-//    private fun moveToResult() {
-//        val intent = Intent(this, ResultActivity::class.java)
-//        intent.putExtra(ResultActivity.EXTRA_IMAGE_URI, currentImageUri.toString())
-//        startActivity(intent)
-//    }
-
     private fun moveToTes() {
         val intent = Intent(this, TabActivity::class.java)
         startActivity(intent)
@@ -211,9 +201,5 @@ class MainActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-
-    companion object {
-//        private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
     }
 }

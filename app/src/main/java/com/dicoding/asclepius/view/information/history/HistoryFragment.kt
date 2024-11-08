@@ -49,7 +49,6 @@ class HistoryFragment : Fragment() {
             // Update the UI with the list of favorite events
             if (events != null) {
                 adapter.submitList(events)
-                Log.d("FavoriteFragment", "RecyclerView loaded with ${events.size} items")
                 if (events.isEmpty()){
                     binding.noEventText.visibility = View.VISIBLE
                     binding.eventHeader.visibility = View.GONE
@@ -57,9 +56,6 @@ class HistoryFragment : Fragment() {
                     binding.noEventText.visibility = View.GONE
                     binding.eventHeader.visibility = View.VISIBLE
                 }
-            } else
-            {
-                Log.d("FavoriteFragment", "Events are null")
             }
         }
 

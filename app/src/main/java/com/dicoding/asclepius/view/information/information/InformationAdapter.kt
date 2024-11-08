@@ -39,8 +39,8 @@ class InformationAdapter (private val listener: OnEventClickListener) : ListAdap
     ) {
         fun bind(news: ArticlesItem) {
             with(binding){
-                tvItemSource.text = news.source.name
-                tvItemTitle.text = news.title
+                tvItemSource.text = news.title
+                tvItemTitle.text = news.description
                 tvItemPublishedDate.text = DateFormatter.formatDate(news.publishedAt)
             }
             Glide.with(itemView.context)

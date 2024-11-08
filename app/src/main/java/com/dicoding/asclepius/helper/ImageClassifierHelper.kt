@@ -3,6 +3,7 @@ package com.dicoding.asclepius.helper
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.media.Image
 import android.net.Uri
 import android.os.Build
@@ -106,9 +107,18 @@ class ImageClassifierHelper(
         try {
             val model = CancerClassification.newInstance(context)
             // convert ke bitmap
+//
+//            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+//            val image = TensorImage.fromBitmap(bitmap)
+            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val source = ImageDecoder.createSource(context.contentResolver, imageUri)
+                ImageDecoder.decodeBitmap(source)
+            } else {
+                MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+            }.copy(Bitmap.Config.ARGB_8888, true)
 
-            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
-            val image = TensorImage.fromBitmap(bitmap)
+            val image = bitmap?.let { TensorImage.fromBitmap(it) }
+
             val results = imageClassifier?.classify(image)
             classifierListener?.onResults(results, System.currentTimeMillis())
 
@@ -122,15 +132,6 @@ class ImageClassifierHelper(
         }
 
     }
-
-//    private fun getOrientationFromRotation(rotation: Int): ImageProcessingOptions.Orientation {
-//        return when (rotation) {
-//            Surface.ROTATION_270 -> ImageProcessingOptions.Orientation.BOTTOM_RIGHT
-//            Surface.ROTATION_180 -> ImageProcessingOptions.Orientation.RIGHT_BOTTOM
-//            Surface.ROTATION_90 -> ImageProcessingOptions.Orientation.TOP_LEFT
-//            else -> ImageProcessingOptions.Orientation.RIGHT_TOP
-//        }
-//    }
 
     interface ClassifierListener {
         fun onError(error: String)

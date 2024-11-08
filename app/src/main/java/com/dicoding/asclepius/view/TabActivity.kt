@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.dicoding.asclepius.R
-import com.example.mytablayout.SectionsPagerAdapter
+import com.dicoding.asclepius.view.information.SectionsPagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

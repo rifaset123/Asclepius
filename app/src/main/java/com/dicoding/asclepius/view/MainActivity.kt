@@ -12,10 +12,17 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.dicoding.asclepius.R
+import com.dicoding.asclepius.data.entity.HistoryEntity
+import com.dicoding.asclepius.data.repository.HistoryRepo
+import com.dicoding.asclepius.data.room.HistoryDao
+import com.dicoding.asclepius.data.room.HistoryDatabase
 import com.dicoding.asclepius.databinding.ActivityMainBinding
+import com.dicoding.asclepius.helper.AppExecutors
 import com.dicoding.asclepius.helper.ImageClassifierHelper
 import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.task.gms.vision.TfLiteVision
 import org.tensorflow.lite.task.gms.vision.classifier.Classifications
 import java.io.File
@@ -23,6 +30,7 @@ import java.text.NumberFormat
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var historyDao: HistoryDao
 
     private var currentImageUri: Uri? = null
 
@@ -56,6 +64,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        // database
+        val db = HistoryDatabase.getInstance(this)
+        historyDao = db.historyDao()
     }
 
     private fun startGallery() {
@@ -85,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCrop(uri: Uri) {
-        val destinationUri = Uri.fromFile(File(cacheDir, "croppedImage.jpg"))
+        val destinationUri = Uri.fromFile(File(cacheDir, "croppedImage_${System.currentTimeMillis()}.jpg"))
         val options = UCrop.Options().apply {
             setCompressionQuality(80)
             setFreeStyleCropEnabled(true)
@@ -141,6 +153,18 @@ class MainActivity : AppCompatActivity() {
                                 }
                             displayResult
                         })
+
+                        // Save result to database
+                        results?.let {
+                            val historyEntity = HistoryEntity(
+                                id = 0,
+                                uriImage = uri.toString(),
+                                result = it[0].categories[0].label,
+                                detail = it[0].categories[0].score.toString()
+                            )
+                            HistoryRepo.getInstance(historyDao).saveHistoryToDatabase(listOf(historyEntity))
+                        }
+
                         runOnUiThread {
                             startActivity(intent)
                             with(binding){

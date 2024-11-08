@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+
+    id("kotlin-android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -66,4 +69,12 @@ dependencies {
     // uCrop
     implementation ("com.github.yalantis:ucrop:2.2.8")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    // room
+    implementation ("androidx.room:room-runtime:2.6.1")
+    implementation ("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+    // coroutine support
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

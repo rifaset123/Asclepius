@@ -1,6 +1,5 @@
-package com.example.mytablayout
+package com.dicoding.asclepius.view.information
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -13,11 +12,10 @@ class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter (
     }
 
     override fun createFragment(position: Int): Fragment {
-        val fragment = HomeFragment()
-        fragment.arguments = Bundle().apply {
-            putInt(HomeFragment.ARG_SECTION_NUMBER, position + 1)
-            putString(HomeFragment.ARG_NAME, appName) // contoh ngirim data
+        return when (position) {
+            0 -> InformationFragment()
+            1 -> HistoryFragment()
+            else -> throw IllegalStateException("Unexpected position: $position")
         }
-        return fragment
     }
 }

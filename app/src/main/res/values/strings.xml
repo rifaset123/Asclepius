@@ -21,6 +21,14 @@
     <string name="inference_time">inference_time</string>
     <string name="tflitevision_is_not_initialized_yet">TfLiteVision is not initialized yet</string>
 
+    <string name="history_headline">Here\'s your analyze history</string>
+    <string name="history_headline_not">You don\'t have any analyze history</string>
+
+    <string name="title_placeholder">Title</string>
+    <string name="placeholder_image">placeholder_image</string>
+
+    <string name="information_headline">These are information that might help you</string>
+
 
 
 </resources>

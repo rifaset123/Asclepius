@@ -14,10 +14,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.dicoding.asclepius.R
-import com.dicoding.asclepius.data.entity.HistoryEntity
-import com.dicoding.asclepius.data.repository.HistoryRepo
-import com.dicoding.asclepius.data.room.HistoryDao
-import com.dicoding.asclepius.data.room.HistoryDatabase
+import com.dicoding.asclepius.data.local.entity.HistoryEntity
+import com.dicoding.asclepius.data.local.repository.HistoryRepo
+import com.dicoding.asclepius.data.local.room.HistoryDao
+import com.dicoding.asclepius.data.local.room.HistoryDatabase
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 import com.dicoding.asclepius.helper.AppExecutors
 import com.dicoding.asclepius.helper.ImageClassifierHelper
@@ -160,7 +160,9 @@ class MainActivity : AppCompatActivity() {
                                 id = 0,
                                 uriImage = uri.toString(),
                                 result = it[0].categories[0].label,
-                                detail = it[0].categories[0].score.toString()
+                                detail = it[0].categories.maxByOrNull { it.score }?.let { category ->
+                                    NumberFormat.getPercentInstance().format(category.score).trim()
+                                } ?: ""
                             )
                             HistoryRepo.getInstance(historyDao).saveHistoryToDatabase(listOf(historyEntity))
                         }

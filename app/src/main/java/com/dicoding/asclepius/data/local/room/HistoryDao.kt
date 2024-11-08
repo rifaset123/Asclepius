@@ -1,11 +1,11 @@
-package com.dicoding.asclepius.data.room
+package com.dicoding.asclepius.data.local.room
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.dicoding.asclepius.data.entity.HistoryEntity
+import com.dicoding.asclepius.data.local.entity.HistoryEntity
 
 @Dao
 interface HistoryDao {
@@ -17,4 +17,7 @@ interface HistoryDao {
     @Update
     suspend fun updateNews(news: HistoryEntity)
 
+    // history
+    @Query("SELECT * FROM history")
+    fun getHistory() : LiveData<List<HistoryEntity>>
 }

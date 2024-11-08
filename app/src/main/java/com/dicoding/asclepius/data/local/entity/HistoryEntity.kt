@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.data.entity
+package com.dicoding.asclepius.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Entity(tableName = "events")
+@Entity(tableName = "history")
 data class HistoryEntity(
     @field:ColumnInfo(name = "id")
     @field:PrimaryKey(autoGenerate = true)

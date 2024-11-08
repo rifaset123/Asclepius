@@ -28,7 +28,8 @@
     <string name="placeholder_image">placeholder_image</string>
 
     <string name="information_headline">These are information that might help you</string>
-
+    <string name="title">Title</string>
+    <string name="published_date">Published Date</string>
 
 
 </resources>

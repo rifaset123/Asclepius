@@ -13,6 +13,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.data.local.entity.HistoryEntity
@@ -33,18 +34,30 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var historyDao: HistoryDao
 
+    private lateinit var viewModel: MainViewModel
+
     private var currentImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         setContentView(R.layout.activity_main)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel.currentImageUri.observe(this) { uri ->
+            uri?.let {
+                binding.previewImageView.apply {
+                    setImageURI(it)
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                }
+                binding.analyzeButton.isEnabled = true
+            }
+        }
 
         with(binding) {
             analyzeButton.isEnabled = false
@@ -60,7 +73,8 @@ class MainActivity : AppCompatActivity() {
 
             // analyze image
             analyzeButton.setOnClickListener {
-                currentImageUri?.let {
+                // observe from viewmodel
+                viewModel.currentImageUri.value?.let {
                     analyzeButton.isEnabled = false
                     analyzeButton.text = getString(R.string.analyzing_image)
                     analyzeImage(it)
@@ -108,6 +122,7 @@ class MainActivity : AppCompatActivity() {
             val resultUri = UCrop.getOutput(data!!)
             if (resultUri != null) {
                 currentImageUri = resultUri
+                viewModel.setCurrentImageUri(resultUri)
                 showImage()
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
